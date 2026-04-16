@@ -3,6 +3,7 @@ package de.maxhenkel.voicechat.plugins.impl;
 import de.maxhenkel.voicechat.api.Group;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 
+import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -42,6 +43,17 @@ public class ClientGroupImpl implements Group {
     @Override
     public Type getType() {
         return group.getType();
+    }
+
+    @Override
+    public int getPriority() {
+        return group.getPriority();
+    }
+
+    @Override
+    @Nullable
+    public int[][] getIcon() {
+        return group.getIcon();
     }
 
     public ClientGroup getGroup() {

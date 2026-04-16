@@ -131,7 +131,21 @@ public class GroupScreen extends VoiceChatScreenBase {
             title = Component.translatable("message.voicechat.group_type_title", Component.literal(group.getName()), GroupType.fromType(group.getType()).getTranslation());
         }
 
-        guiGraphics.text(font, title, guiLeft + xSize / 2 - font.width(title) / 2, guiTop + 5, FONT_COLOR, false);
+        int titleWidth = font.width(title);
+        Identifier iconTexture = ClientManager.getGroupManager().getGroupIconTexture(group.getId());
+        boolean hasIcon = iconTexture != null;
+        int iconSpace = hasIcon ? 16 + 4 : 0;
+        int totalWidth = iconSpace + titleWidth;
+        int startX = guiLeft + xSize / 2 - totalWidth / 2;
+
+        if (hasIcon) {
+            guiGraphics.pose().pushMatrix();
+            guiGraphics.pose().translate(startX, guiTop);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, iconTexture, 0, 0, 0, 0, 16, 16, 16, 16);
+            guiGraphics.pose().popMatrix();
+        }
+
+        guiGraphics.text(font, title, startX + iconSpace, guiTop + 5, FONT_COLOR, false);
     }
 
 }

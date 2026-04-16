@@ -38,6 +38,23 @@ public interface Group {
      */
     Type getType();
 
+    /**
+     * Groups with higher priority are displayed first in the group list.
+     * Default priority is <code>0</code>.
+     *
+     * @return the display priority of the group
+     */
+    int getPriority();
+
+    /**
+     * A 16x16 icon to display next to the group name in the group list.
+     * The array is indexed as [x][y] where each value is an ABGR color int.
+     *
+     * @return the 16x16 icon pixel array, or <code>null</code> if no custom icon
+     */
+    @Nullable
+    int[][] getIcon();
+
     public interface Type {
 
         /**
@@ -103,6 +120,25 @@ public interface Group {
          * @return the builder
          */
         Builder setType(Type type);
+
+        /**
+         * Sets the display priority of the group.
+         * Groups with higher priority are displayed first in the group list.
+         * Default is <code>0</code>.
+         *
+         * @param priority the display priority
+         * @return the builder
+         */
+        Builder setPriority(int priority);
+
+        /**
+         * Sets a custom 16x16 icon to display next to the group name.
+         * The array should be indexed as [x][y] where each value is an ABGR color int.
+         *
+         * @param icon the 16x16 icon pixel array, or <code>null</code> for no custom icon
+         * @return the builder
+         */
+        Builder setIcon(@Nullable int[][] icon);
 
         /**
          * @return the built group

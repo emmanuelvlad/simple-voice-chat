@@ -1,6 +1,5 @@
 package de.maxhenkel.voicechat.voice.client;
 
-import com.mojang.blaze3d.platform.NativeImage;
 import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.volume.AdjustVolumeList;
 import de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager;
@@ -8,8 +7,6 @@ import de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager;
 import de.maxhenkel.voicechat.net.ClientServerNetManager;
 import de.maxhenkel.voicechat.plugins.CategoryManager;
 import de.maxhenkel.voicechat.plugins.impl.VolumeCategoryImpl;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.Identifier;
 
 import javax.annotation.Nullable;
@@ -38,7 +35,8 @@ public class ClientCategoryManager extends CategoryManager {
         super.addCategory(category);
 
         if (category.getIcon() != null) {
-            registerImage(category.getId(), fromIntArray(category.getIcon()));
+            Identifier identifier = IconUtil.registerImage(category.getId(), IconUtil.fromIntArray(category.getIcon()));
+            images.put(category.getId(), identifier);
         }
         AdjustVolumeList.update();
     }
@@ -47,45 +45,18 @@ public class ClientCategoryManager extends CategoryManager {
     @Nullable
     public VolumeCategoryImpl removeCategory(String categoryId) {
         VolumeCategoryImpl volumeCategory = super.removeCategory(categoryId);
-        unRegisterImage(categoryId);
+        Identifier identifier = images.remove(categoryId);
+        if (identifier != null) {
+            IconUtil.unRegisterImage(identifier);
+        }
         AdjustVolumeList.update();
         return volumeCategory;
     }
 
     public void clear() {
-        categories.keySet().forEach(this::unRegisterImage);
+        images.values().forEach(IconUtil::unRegisterImage);
+        images.clear();
         categories.clear();
-    }
-
-    private void registerImage(String id, NativeImage image) {
-        Identifier identifier = Identifier.fromNamespaceAndPath(Voicechat.MODID, id);
-        Minecraft.getInstance().getEntityRenderDispatcher().textureManager.register(identifier, new DynamicTexture(identifier::toString, image));
-        images.put(id, identifier);
-    }
-
-    private void unRegisterImage(String id) {
-        Identifier identifier = images.get(id);
-        if (identifier != null) {
-            Minecraft.getInstance().getEntityRenderDispatcher().textureManager.release(identifier);
-            images.remove(id);
-        }
-    }
-
-    private NativeImage fromIntArray(int[][] icon) {
-        if (icon.length != 16) {
-            throw new IllegalStateException("Icon is not 16x16");
-        }
-        NativeImage nativeImage = new NativeImage(16, 16, true);
-        for (int x = 0; x < icon.length; x++) {
-            if (icon[x].length != 16) {
-                nativeImage.close();
-                throw new IllegalStateException("Icon is not 16x16");
-            }
-            for (int y = 0; y < icon.length; y++) {
-                nativeImage.setPixel(x, y, icon[x][y]);
-            }
-        }
-        return nativeImage;
     }
 
     public Identifier getTexture(String id, Identifier defaultImage) {

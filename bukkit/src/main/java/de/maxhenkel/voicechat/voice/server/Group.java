@@ -14,14 +14,23 @@ public class Group {
     private boolean persistent;
     private boolean hidden;
     private de.maxhenkel.voicechat.api.Group.Type type;
+    private int priority;
+    @Nullable
+    private int[][] icon;
 
-    public Group(UUID id, String name, @Nullable String password, boolean persistent, boolean hidden, de.maxhenkel.voicechat.api.Group.Type type) {
+    public Group(UUID id, String name, @Nullable String password, boolean persistent, boolean hidden, de.maxhenkel.voicechat.api.Group.Type type, int priority, @Nullable int[][] icon) {
         this.id = id;
         this.name = name;
         this.password = password;
         this.persistent = persistent;
         this.hidden = hidden;
         this.type = type;
+        this.priority = priority;
+        this.icon = icon;
+    }
+
+    public Group(UUID id, String name, @Nullable String password, boolean persistent, boolean hidden, de.maxhenkel.voicechat.api.Group.Type type) {
+        this(id, name, password, persistent, hidden, type, 0, null);
     }
 
     public Group(UUID id, String name, @Nullable String password, boolean persistent) {
@@ -65,6 +74,15 @@ public class Group {
         return type;
     }
 
+    public int getPriority() {
+        return priority;
+    }
+
+    @Nullable
+    public int[][] getIcon() {
+        return icon;
+    }
+
     public boolean isOpen() {
         return type == de.maxhenkel.voicechat.api.Group.Type.OPEN;
     }
@@ -78,7 +96,7 @@ public class Group {
     }
 
     public ClientGroup toClientGroup() {
-        return new ClientGroup(id, name, password != null, persistent, hidden, type);
+        return new ClientGroup(id, name, password != null, persistent, hidden, type, priority, icon);
     }
 
 }

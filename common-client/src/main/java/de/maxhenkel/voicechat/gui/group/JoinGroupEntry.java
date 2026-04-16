@@ -5,6 +5,7 @@ import de.maxhenkel.voicechat.Voicechat;
 import de.maxhenkel.voicechat.gui.GameProfileUtils;
 import de.maxhenkel.voicechat.gui.GroupType;
 import de.maxhenkel.voicechat.gui.widgets.ListScreenEntryBase;
+import de.maxhenkel.voicechat.voice.client.ClientManager;
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
 import de.maxhenkel.voicechat.voice.common.PlayerState;
 import net.minecraft.ChatFormatting;
@@ -57,17 +58,30 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
         }
 
         boolean hasPassword = group.group.hasPassword();
+        Identifier iconTexture = ClientManager.getGroupManager().getGroupIconTexture(group.group.getId());
+        boolean hasIcon = iconTexture != null;
+
+        int iconOffset = 0;
+
+        if (hasIcon) {
+            guiGraphics.pose().pushMatrix();
+            guiGraphics.pose().translate(left + PADDING, top + height / 2F - 8F);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, iconTexture, 0, 0, 0, 0, 16, 16, 16, 16);
+            guiGraphics.pose().popMatrix();
+            iconOffset = 16 + PADDING;
+        }
 
         if (hasPassword) {
             guiGraphics.pose().pushMatrix();
-            guiGraphics.pose().translate(left + PADDING, top + height / 2F - 8F);
+            guiGraphics.pose().translate(left + PADDING + iconOffset, top + height / 2F - 8F);
             guiGraphics.pose().scale(16F / 12F, 16F / 12F);
             guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, LOCK, 16, 16, 0, 0, 0, 0, 12, 12);
             guiGraphics.pose().popMatrix();
         }
 
         MutableComponent groupName = Component.literal(group.group.getName());
-        guiGraphics.text(minecraft.font, groupName, left + PADDING + (hasPassword ? 16 + PADDING : 0), top + height / 2 - minecraft.font.lineHeight / 2, PLAYER_NAME_COLOR, false);
+        int nameOffsetX = iconOffset + (hasPassword ? 16 + PADDING : 0);
+        guiGraphics.text(minecraft.font, groupName, left + PADDING + nameOffsetX, top + height / 2 - minecraft.font.lineHeight / 2, PLAYER_NAME_COLOR, false);
 
         int textWidth = minecraft.font.width(groupName) + (hasPassword ? 16 + PADDING : 0);
 

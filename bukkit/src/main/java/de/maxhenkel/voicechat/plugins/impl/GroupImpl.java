@@ -51,6 +51,17 @@ public class GroupImpl implements Group {
         return group;
     }
 
+    @Override
+    public int getPriority() {
+        return group.getPriority();
+    }
+
+    @Override
+    @Nullable
+    public int[][] getIcon() {
+        return group.getIcon();
+    }
+
     @Nullable
     public static GroupImpl create(PlayerState state) {
         UUID groupId = state.getGroup();
@@ -91,6 +102,9 @@ public class GroupImpl implements Group {
         private boolean persistent;
         private boolean hidden;
         private Type type;
+        private int priority;
+        @Nullable
+        private int[][] icon;
 
         public BuilderImpl() {
             type = Type.NORMAL;
@@ -145,6 +159,18 @@ public class GroupImpl implements Group {
         }
 
         @Override
+        public Builder setPriority(int priority) {
+            this.priority = priority;
+            return this;
+        }
+
+        @Override
+        public Builder setIcon(@Nullable int[][] icon) {
+            this.icon = icon;
+            return this;
+        }
+
+        @Override
         public Group build() {
             if (name == null) {
                 throw new IllegalStateException("Group is missing a name");
@@ -152,7 +178,7 @@ public class GroupImpl implements Group {
             if (!Voicechat.GROUP_REGEX.matcher(name).matches()) {
                 throw new IllegalStateException(String.format("Invalid group name: %s", name));
             }
-            GroupImpl group = new GroupImpl(new de.maxhenkel.voicechat.voice.server.Group(id == null ? UUID.randomUUID() : id, name, password, persistent, hidden, type));
+            GroupImpl group = new GroupImpl(new de.maxhenkel.voicechat.voice.server.Group(id == null ? UUID.randomUUID() : id, name, password, persistent, hidden, type, priority, icon));
             Server server = Voicechat.SERVER.getServer();
             if (server != null && persistent) {
                 server.getGroupManager().addGroup(group.getGroup(), null);

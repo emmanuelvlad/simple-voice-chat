@@ -59,7 +59,11 @@ public class JoinGroupList extends ListScreenListBase<JoinGroupEntry> {
 
         groups.values().forEach(group -> group.getMembers().sort(Comparator.comparing(PlayerState::getName)));
 
-        replaceEntries(groups.values().stream().map(group -> new JoinGroupEntry(parent, group)).sorted(Comparator.comparing(o -> o.getGroup().getGroup().getName())).collect(Collectors.toList()));
+        replaceEntries(groups.values().stream().map(group -> {
+            return new JoinGroupEntry(parent, group);
+        }).sorted(Comparator.<JoinGroupEntry>comparingInt(o -> -o.getGroup().getGroup().getPriority())
+                .thenComparing(o -> o.getGroup().getGroup().getName()))
+                .collect(Collectors.toList()));
     }
 
     public static void update() {
