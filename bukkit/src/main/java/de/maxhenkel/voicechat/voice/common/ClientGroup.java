@@ -19,8 +19,9 @@ public class ClientGroup {
     private final int priority;
     @Nullable
     private final int[][] icon;
+    private final boolean translatable;
 
-    public ClientGroup(UUID id, String name, boolean hasPassword, boolean persistent, boolean hidden, de.maxhenkel.voicechat.api.Group.Type type, int priority, @Nullable int[][] icon) {
+    public ClientGroup(UUID id, String name, boolean hasPassword, boolean persistent, boolean hidden, de.maxhenkel.voicechat.api.Group.Type type, int priority, @Nullable int[][] icon, boolean translatable) {
         this.id = id;
         this.name = name;
         this.hasPassword = hasPassword;
@@ -29,10 +30,11 @@ public class ClientGroup {
         this.type = type;
         this.priority = priority;
         this.icon = icon;
+        this.translatable = translatable;
     }
 
     public ClientGroup(UUID id, String name, boolean hasPassword, boolean persistent, boolean hidden, de.maxhenkel.voicechat.api.Group.Type type) {
-        this(id, name, hasPassword, persistent, hidden, type, 0, null);
+        this(id, name, hasPassword, persistent, hidden, type, 0, null, false);
     }
 
     public UUID getId() {
@@ -68,6 +70,10 @@ public class ClientGroup {
         return icon;
     }
 
+    public boolean isTranslatable() {
+        return translatable;
+    }
+
     public static ClientGroup fromBytes(FriendlyByteBuf buf) {
         UUID id = buf.readUUID();
         String name = buf.readUtf(512);
@@ -85,7 +91,8 @@ public class ClientGroup {
                 }
             }
         }
-        return new ClientGroup(id, name, hasPassword, persistent, hidden, type, priority, icon);
+        boolean translatable = buf.isReadable(1) && buf.readBoolean();
+        return new ClientGroup(id, name, hasPassword, persistent, hidden, type, priority, icon, translatable);
     }
 
     public void toBytes(FriendlyByteBuf buf) {
@@ -104,6 +111,7 @@ public class ClientGroup {
                 }
             }
         }
+        buf.writeBoolean(translatable);
     }
 
     @Override

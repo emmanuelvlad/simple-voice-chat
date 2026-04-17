@@ -126,9 +126,9 @@ public class GroupScreen extends VoiceChatScreenBase {
 
         MutableComponent title;
         if (group.getType().equals(Group.Type.NORMAL)) {
-            title = Component.translatable("message.voicechat.group_title", Component.literal(group.getName()));
+            title = Component.translatable("message.voicechat.group_title", group.getNameComponent());
         } else {
-            title = Component.translatable("message.voicechat.group_type_title", Component.literal(group.getName()), GroupType.fromType(group.getType()).getTranslation());
+            title = Component.translatable("message.voicechat.group_type_title", group.getNameComponent(), GroupType.fromType(group.getType()).getTranslation());
         }
 
         int titleWidth = font.width(title);

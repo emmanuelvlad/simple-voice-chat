@@ -58,6 +58,11 @@ public class GroupImpl implements Group {
         return group.getIcon();
     }
 
+    @Override
+    public boolean isTranslatable() {
+        return group.isTranslatable();
+    }
+
     public de.maxhenkel.voicechat.voice.server.Group getGroup() {
         return group;
     }
@@ -105,6 +110,7 @@ public class GroupImpl implements Group {
         private int priority;
         @Nullable
         private int[][] icon;
+        private boolean translatable;
 
         public BuilderImpl() {
             type = Type.NORMAL;
@@ -170,6 +176,12 @@ public class GroupImpl implements Group {
         }
 
         @Override
+        public Builder setTranslatable(boolean translatable) {
+            this.translatable = translatable;
+            return this;
+        }
+
+        @Override
         public Group build() {
             if (name == null) {
                 throw new IllegalStateException("Group is missing a name");
@@ -177,7 +189,7 @@ public class GroupImpl implements Group {
             if (!Voicechat.GROUP_REGEX.matcher(name).matches()) {
                 throw new IllegalStateException(String.format("Invalid group name: %s", name));
             }
-            GroupImpl group = new GroupImpl(new de.maxhenkel.voicechat.voice.server.Group(id == null ? UUID.randomUUID() : id, name, password, persistent, hidden, type, priority, icon));
+            GroupImpl group = new GroupImpl(new de.maxhenkel.voicechat.voice.server.Group(id == null ? UUID.randomUUID() : id, name, password, persistent, hidden, type, priority, icon, translatable));
             Server server = Voicechat.SERVER.getServer();
             if (server != null && persistent) {
                 server.getGroupManager().addGroup(group.getGroup(), null);

@@ -129,7 +129,7 @@ public class VoicechatCommands {
             }
 
             String passwordSuffix = group.getPassword() == null ? "" : " \"" + group.getPassword() + "\"";
-            player.sendSystemMessage(Component.translatable("message.voicechat.invite", source.getDisplayName(), Component.literal(group.getName()).withStyle(ChatFormatting.GRAY), ComponentUtils.wrapInSquareBrackets(Component.translatable("message.voicechat.accept_invite").withStyle(style -> style.withClickEvent(new ClickEvent.RunCommand("/voicechat join " + group.getId().toString() + passwordSuffix)).withHoverEvent(new HoverEvent.ShowText(Component.translatable("message.voicechat.accept_invite.hover"))))).withStyle(ChatFormatting.GREEN)));
+            player.sendSystemMessage(Component.translatable("message.voicechat.invite", source.getDisplayName(), group.getNameComponent().withStyle(ChatFormatting.GRAY), ComponentUtils.wrapInSquareBrackets(Component.translatable("message.voicechat.accept_invite").withStyle(style -> style.withClickEvent(new ClickEvent.RunCommand("/voicechat join " + group.getId().toString() + passwordSuffix)).withHoverEvent(new HoverEvent.ShowText(Component.translatable("message.voicechat.accept_invite.hover"))))).withStyle(ChatFormatting.GREEN)));
 
             commandSource.getSource().sendSuccess(() -> Component.translatable("message.voicechat.invite_successful", player.getDisplayName()), false);
 
@@ -259,7 +259,7 @@ public class VoicechatCommands {
         }
 
         server.getGroupManager().joinGroup(group, source.getPlayerOrException(), password);
-        source.sendSuccess(() -> Component.translatable("message.voicechat.join_successful", Component.literal(group.getName()).withStyle(ChatFormatting.GRAY)), false);
+        source.sendSuccess(() -> Component.translatable("message.voicechat.join_successful", group.getNameComponent().withStyle(ChatFormatting.GRAY)), false);
         return 1;
     }
 

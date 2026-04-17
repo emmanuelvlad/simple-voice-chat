@@ -1,6 +1,8 @@
 package de.maxhenkel.voicechat.voice.server;
 
 import de.maxhenkel.voicechat.voice.common.ClientGroup;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -17,8 +19,9 @@ public class Group {
     private int priority;
     @Nullable
     private int[][] icon;
+    private boolean translatable;
 
-    public Group(UUID id, String name, @Nullable String password, boolean persistent, boolean hidden, de.maxhenkel.voicechat.api.Group.Type type, int priority, @Nullable int[][] icon) {
+    public Group(UUID id, String name, @Nullable String password, boolean persistent, boolean hidden, de.maxhenkel.voicechat.api.Group.Type type, int priority, @Nullable int[][] icon, boolean translatable) {
         this.id = id;
         this.name = name;
         this.password = password;
@@ -27,10 +30,11 @@ public class Group {
         this.type = type;
         this.priority = priority;
         this.icon = icon;
+        this.translatable = translatable;
     }
 
     public Group(UUID id, String name, @Nullable String password, boolean persistent, boolean hidden, de.maxhenkel.voicechat.api.Group.Type type) {
-        this(id, name, password, persistent, hidden, type, 0, null);
+        this(id, name, password, persistent, hidden, type, 0, null, false);
     }
 
     public Group(UUID id, String name, @Nullable String password, boolean persistent) {
@@ -83,6 +87,17 @@ public class Group {
         return icon;
     }
 
+    public boolean isTranslatable() {
+        return translatable;
+    }
+
+    public MutableComponent getNameComponent() {
+        if (translatable) {
+            return Component.translatable(name);
+        }
+        return Component.literal(name);
+    }
+
     public boolean isOpen() {
         return type == de.maxhenkel.voicechat.api.Group.Type.OPEN;
     }
@@ -96,7 +111,7 @@ public class Group {
     }
 
     public ClientGroup toClientGroup() {
-        return new ClientGroup(id, name, password != null, persistent, hidden, type, priority, icon);
+        return new ClientGroup(id, name, password != null, persistent, hidden, type, priority, icon, translatable);
     }
 
 }

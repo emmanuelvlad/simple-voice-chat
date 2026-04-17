@@ -79,7 +79,7 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
             guiGraphics.pose().popMatrix();
         }
 
-        MutableComponent groupName = Component.literal(group.group.getName());
+        MutableComponent groupName = group.group.getNameComponent();
         int nameOffsetX = iconOffset + (hasPassword ? 16 + PADDING : 0);
         guiGraphics.text(minecraft.font, groupName, left + PADDING + nameOffsetX, top + height / 2 - minecraft.font.lineHeight / 2, PLAYER_NAME_COLOR, false);
 
@@ -117,9 +117,9 @@ public class JoinGroupEntry extends ListScreenEntryBase<JoinGroupEntry> {
         List<FormattedCharSequence> tooltip = Lists.newArrayList();
 
         if (group.getGroup().getType().equals(de.maxhenkel.voicechat.api.Group.Type.NORMAL)) {
-            tooltip.add(Component.translatable("message.voicechat.group_title", Component.literal(group.getGroup().getName())).getVisualOrderText());
+            tooltip.add(Component.translatable("message.voicechat.group_title", group.getGroup().getNameComponent()).getVisualOrderText());
         } else {
-            tooltip.add(Component.translatable("message.voicechat.group_type_title", Component.literal(group.getGroup().getName()), GroupType.fromType(group.getGroup().getType()).getTranslation()).getVisualOrderText());
+            tooltip.add(Component.translatable("message.voicechat.group_type_title", group.getGroup().getNameComponent(), GroupType.fromType(group.getGroup().getType()).getTranslation()).getVisualOrderText());
         }
 
         if (group.getMembers().isEmpty()) {

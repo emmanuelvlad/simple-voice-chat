@@ -56,6 +56,11 @@ public class ClientGroupImpl implements Group {
         return group.getIcon();
     }
 
+    @Override
+    public boolean isTranslatable() {
+        return group.isTranslatable();
+    }
+
     public ClientGroup getGroup() {
         return group;
     }

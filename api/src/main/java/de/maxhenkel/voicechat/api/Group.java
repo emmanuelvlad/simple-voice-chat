@@ -55,6 +55,11 @@ public interface Group {
     @Nullable
     int[][] getIcon();
 
+    /**
+     * @return if the group name should be treated as a translation key
+     */
+    boolean isTranslatable();
+
     public interface Type {
 
         /**
@@ -139,6 +144,15 @@ public interface Group {
          * @return the builder
          */
         Builder setIcon(@Nullable int[][] icon);
+
+        /**
+         * Sets whether the group name should be treated as a translation key.
+         * Defaults to <code>false</code> (static name).
+         *
+         * @param translatable if the name is a translation key
+         * @return the builder
+         */
+        Builder setTranslatable(boolean translatable);
 
         /**
          * @return the built group
